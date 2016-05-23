@@ -89,16 +89,8 @@ class Call(Expr):
 
 	@classmethod
 	def feed(cls, token_queue):
-		lparen = token_queue.pop(0)
-		if lparen.type != TokenType.LPAREN:
-			msg = 'Expected LPAREN, got {}'.format(lparen.type.name)
-			raise ParseError(lparen.pos, msg)
-
-		atom = token_queue.pop(0)
-		if atom.type != TokenType.ATOM:
-			msg = 'Expected ATOM, got {}'.format(atom.type.name)
-			raise ParseError(atom.pos, msg)
-
+		expect(TokenType.LPAREN, token_queue)
+		atom = expect(TokenType.ATOM, token_queue)
 		name = atom.value
 
 		args = []
@@ -110,10 +102,7 @@ class Call(Expr):
 			else:
 				args.append(arg)
 
-		rparen = token_queue.pop(0)
-		if rparen.type != TokenType.RPAREN:
-			msg = 'Expected RPAREN, got {}'.format(rparen.type.name)
-			raise ParseError(rparen.pos, msg)
+		expect(TokenType.RPAREN, token_queue)
 
 		return Call(name, args)
 
@@ -133,20 +122,9 @@ class Lambda(Expr):
 
 	@classmethod
 	def feed(cls, token_queue):
-		lparen = token_queue.pop(0)
-		if lparen.type != TokenType.LPAREN:
-			msg = 'Expected LPAREN, got {}'.format(lparen.type.name)
-			raise ParseError(lparen.pos, msg)
-
-		lambda_ = token_queue.pop(0)
-		if lambda_.type != TokenType.LAMBDA:
-			msg = 'Expected LAMBDA, got {}'.format(lambda_.type.name)
-			raise ParseError(lambda_.pos, msg)
-
-		lparen = token_queue.pop(0)
-		if lparen.type != TokenType.LPAREN:
-			msg = 'Expected LPAREN, got {}'.format(lparen.type.name)
-			raise ParseError(lparen.pos, msg)
+		expect(TokenType.LPAREN, token_queue)
+		expect(TokenType.LAMBDA, token_queue)
+		expect(TokenType.LPAREN, token_queue)
 
 		token = token_queue.pop(0)
 
@@ -155,18 +133,9 @@ class Lambda(Expr):
 			token = token_queue.pop(0)
 			params.append(token.value)
 
-		rparen = token_queue.pop(0)
-		if rparen.type != TokenType.RPAREN:
-			msg = 'Expected RPAREN, got {}'.format(rparen.type.name)
-			raise ParseError(rparen.pos, msg)
-
+		expect(TokenType.RPAREN, token_queue)
 		body = Expr.consume(token_queue)
-
-		rparen = token_queue.pop(0)
-		if rparen.type != TokenType.RPAREN:
-			msg = 'Expected RPAREN, got {}'.format(rparen.type.name)
-			raise ParseError(rparen.pos, msg)
-
+		expect(TokenType.RPAREN, token_queue)
 		return Lambda(params, body)
 
 
@@ -268,3 +237,11 @@ def parse(code, path=None):
 			instrs.append(instr)
 
 	return Program(instrs, path)
+
+
+def expect(token_type, token_queue):
+	token = token_queue.pop(0)
+	if token.type != token_type:
+		msg = 'Expected {}, got {}'.format(token_type.name, token.type.name)
+		raise ParseError(token.pos, msg)
+	return token
