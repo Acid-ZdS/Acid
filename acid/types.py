@@ -16,7 +16,7 @@ class SourcePos:
 	def __str__(self):
 		return 'line {pos.line}, column {pos.column}'.format(pos=self)
 
-	def feed(self, string):
+	def feed(self, string):		
 		for char in string:
 			if char == '\n':
 				self.line += 1

@@ -1,6 +1,15 @@
 #!/usr/bin/env python3.4
 # coding: utf-8
 
+__all__ = [
+	'Program',                                   # program AST
+	'Expr', 'Literal',                           # abstract AST nodes
+	'Call', 'Lambda',                            # calls
+	'Variable', 'IntLiteral', 'FloatLiteral',    # atoms
+	'parse'                                      # str <-> Program
+]
+
+
 from abc import *
 
 from acid.lexer import TokenType, tokenize
@@ -8,6 +17,10 @@ from acid.exception import ParseError
 
 
 class Program:
+	"""
+	Represents a sequence of instructions.
+	"""
+
 	def __init__(self, instructions, path=None):
 		self.instructions = instructions
 		self.path = path
@@ -22,11 +35,25 @@ class Expr(ABC):
 
 	@abstractclassmethod
 	def feed(cls, token_queue):
+		"""
+		Consumes a token list and returns an Expr instance if the code was
+		correct, raises a ParseError otherwise.
+
+		Override this function to implement a new AST node.
+		"""
+
 		raise NotImplementedError
 
 	@classmethod
 	def consume(cls, token_queue):
+		"""
+		Tries to parse an Expr node from a token list.
+		This does not affect the list if the function failed to parse.
+		"""
+
+		# tries every concrete Expr node
 		for node_type in resolve_node_order(cls):
+			# copies the token list
 			tmp_queue = token_queue[:]
 
 			try:
@@ -34,11 +61,14 @@ class Expr(ABC):
 			except ParseError:
 				continue
 			except IndexError:
+				# when the user tries to call token_queue.pop(0)
 				raise ParseError(token_queue[0].pos, 'Unexpected EOF')
 			else:
+				# assign tmp_queue to reference token_queue
 				token_queue[:] = tmp_queue
 				break
 		else:
+			# when every expr node has been tried, but none succeeded to parse
 			raise ParseError(token_queue[0].pos, 'Failed to parse code')
 
 		return node
