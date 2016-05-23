@@ -4,7 +4,7 @@
 
 class ParseError(ValueError):
 	"""
-	Raised when the parser fails parse the code.
+	Raised when the parser fails to parse the code.
 	"""
 
 	def __init__(self, pos, msg):
