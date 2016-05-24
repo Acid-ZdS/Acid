@@ -31,6 +31,8 @@ class Expr(ABC):
 	Abstract AST element.
 	"""
 
+	# says that this class' `consume` method will iterate through
+	# every subclass
 	abstract = True
 
 	@abstractclassmethod
@@ -80,7 +82,11 @@ class Call(Expr):
 	ex: `(func x y z)`
 	"""
 
+	# make the `consume` method use this class' `feed` instead of
+	# iterating its subclasses
 	abstract = False
+
+	# specify the order in which the parser will try expression types
 	priority = 2
 
 	def __init__(self, name, args):
@@ -94,6 +100,7 @@ class Call(Expr):
 		name = atom.value
 
 		args = []
+		# consumes expressions as long as it parses.
 		while True:
 			try:
 				arg = Expr.consume(token_queue)
@@ -153,13 +160,8 @@ class Variable(Expr):
 
 	@classmethod
 	def feed(cls, token_queue):
-		token = token_queue.pop(0)
-
-		if token.type == TokenType.ATOM:
-			return Variable(token.value)
-		else:
-			msg = 'Expected ATOM, got {}'.format(token.type.name)
-			raise ParseError(token.pos, msg)
+		atom = expect(TokenType.ATOM, token_queue)
+		return Variable(atom.value)
 
 
 class Literal(Expr):
@@ -185,13 +187,8 @@ class IntLiteral(Literal):
 
 	@classmethod
 	def feed(cls, token_queue):
-		token = token_queue[0]
-
-		if token.type == TokenType.INT_LITERAL:
-			token_queue.pop(0)
-			return cls(int(token.value))
-		else:
-			raise ParseError(token.pos, "Unexpected {}".format(token.type.name))
+		token = expect(TokenType.INT_LITERAL, token_queue)
+		return cls(int(token.value))
 
 
 class FloatLiteral(Literal):
@@ -204,13 +201,8 @@ class FloatLiteral(Literal):
 
 	@classmethod
 	def feed(cls, token_queue):
-		token = token_queue[0]
-
-		if token.type == TokenType.FLOAT_LITERAL:
-			token_queue.pop(0)
-			return cls(float(token.value))
-		else:
-			raise ParseError(token.pos, "Unexpected {}".format(token.type.name))
+		token = expect(TokenType.FLOAT_LITERAL, token_queue)
+		return cls(float(token.value))
 
 
 def resolve_node_order(expr_type=Expr):
