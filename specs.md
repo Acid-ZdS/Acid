@@ -14,7 +14,7 @@
 > 
 > Pourquoi définir des lambdas plutôt que des fonctions ? Pour deux raisons. Premièrement, parce qu'un langage fonctionnel puissant se doit de pouvoir passer une fonction en argument à une autre fonction, et renvoyer des fonctions : ces fonctions n'ont pas nécessairement besoin d'être nommées, et il est plus simple d'avoir un mot-clé pour définir une lambda, et un autre pour donner un nom à un objet, qu'un mot-clé pour les fonctions avec un nom, et un autre pour les fonctions anonymes.
 > 
-> Deuxièmement, parce que par leur seul présence, on donne la possibilité d'utiliser des fonctions curryfiées (c'est-à-dire ayant déjà reçu une partie de leurs arguments). Par exemple, la fonction curryfiée `(-1)` de Haskell se traduirait en zLang par ce code.
+> Deuxièmement, parce que par leur seul présence, on donne la possibilité d'utiliser des fonctions curryfiées (c'est-à-dire ayant déjà reçu une partie de leurs arguments). Par exemple, la fonction curryfiée `(-1)` de Haskell se traduirait en Acid par ce code.
 > 
 > ```lisp
 > (lambda x (- x 1))
@@ -36,7 +36,7 @@
 > 
 > - `Int` ;
 > - `Int8`, `Word8`, `Int16`, etc. ;
-> - `Float` et `Double` (peut-être même juste le second) ;
+> - `Float` et `Double` ;
 > - `Char` (qui représente un caractère Unicode, par un entier sur 8 bits) ;
 > - `tuple …` (par exemple, `(tuple Int Char Word64)`).
 > 
@@ -61,9 +61,7 @@
 > 
 > En français : une liste de `a` (`List` est un type paramétré, on peut mettre n'importe quoi dedans) est, soit une liste vide appelée `Nil`, soit un `Cons`, qui est la réunion d'un `a` et d'une liste de `a`.
 > 
-> Dans ma première proposition, je suggérais de laisser de côté les types paramétrés dans un premier temps. Je retire cette suggestion, parce que trois des types les plus utiles de la programmation fonctionnelle (les listes, les options (`Maybe` en Haskell, `Option` en Rust) et les alternatives (`Either` en Haskell, `Result` en Rust)) sont tous paramétrés. On perdrait beaucoup à ne pas les avoir.
-> 
-> Alors voici ma proposition. Pour définir un type, on doit définir un ou plusieurs constructeurs, prenant des types en paramètres. Le type lui-même peut prendre des paramètres, qui peuvent ensuite être utilisés dans les constructeurs. Voici le type `Option` du Rust, tel qu'il serait défini en zLang.
+> Pour définir un type, on doit définir un ou plusieurs constructeurs, prenant des types en paramètres. Le type lui-même peut prendre des paramètres, qui peuvent ensuite être utilisés dans les constructeurs. Voici le type `Option` du Rust, tel qu'il serait défini en Acid.
 > 
 > ```lisp
 > (define Option (type a (
@@ -101,7 +99,7 @@
 > 1. Les constructeurs sont toujours qualifiés.
 > 2. Les constructeurs ne sont jamais qualifiés (Haskell).
 > 3. Les constructeurs sont qualifiés par défaut et un mot-clé supplémentaire permet de déqualifier les constructeurs d'un type donné.
-> 4. Les constructeurs sont qualifiés par défaut mais le mot-clé permettant d'importer dans l'espace de nom courant le contenu d'un module permet d'importer les constructeurs d'un type donné, traité comme s'il était un module (Rust).
+> **4. Les constructeurs sont qualifiés par défaut mais le mot-clé permettant d'importer dans l'espace de nom courant le contenu d'un module permet d'importer les constructeurs d'un type donné, traité comme s'il était un module (Rust).** (Solution choisie d'office)
 > 
 > Je préfère la dernière solution, même si le mot-clé en question ne deviendra vraiment utile que si l'on finit par ajouter un système de modules.
 > 
@@ -136,7 +134,7 @@
 > )))
 > ```
 > 
-> Mais ce n'est pas toujours possible ainsi. Comment définir un mot-clé `function` qui prend un nom, une liste d'arguments et un corps de fonction, et qui en fait une combinaison de `define` et de `lambda` ? Je n'ai pas encore trouvé de solution satisfaisante, alors je vous invite à y réfléchir.
+> Mais ce n'est pas toujours possible ainsi. Comment définir un mot-clé `function` qui prend un nom, une liste d'arguments et un corps de fonction, et qui en fait une combinaison de `define` et de `lambda` ? Je n'ai pas encore trouvé de solution satisfaisante, alors je vous invite à y réfléchir. ([Merci de donner votre avis sur le forum](https://zestedesavoir.com/forums/sujet/6129/acid-le-lisp-like-de-la-communaute/))
 > 
 > ## Des commentaires
 > 
@@ -150,3 +148,5 @@
 > - Vérifier que les déclarations de type sont cohérente entre elles.
 > - Interpréter / compiler.
 Source:[Dominus Carnufex](https://zestedesavoir.com/forums/sujet/6065/un-petit-langage-zds/?page=7#p111399)
+
+Le message original à été annoté et les évocations à un autre nom de langage ont été remplacées par Acid. Cette proposition à été choisie comme base à la réalisation de Acid.
