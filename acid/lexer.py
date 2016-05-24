@@ -1,6 +1,10 @@
 #!/usr/bin/env python3.4
 # coding: utf-8
 
+"""
+Defines some types and functions for tokenizing a given code string.
+"""
+
 __all__ = ['TokenType', 'Token', 'tokenize']
 
 

@@ -1,6 +1,11 @@
 #!/usr/bin/env python3.4
 # coding: utf-8
 
+"""
+This module defines some exception that may be raised during tokenizing,
+parsing, or execution.
+"""
+
 
 class ParseError(ValueError):
 	"""

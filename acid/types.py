@@ -1,6 +1,10 @@
 #!/usr/bin/env python3.4
 # coding: utf-8
 
+"""
+Defines some types that are used by several modules in the package.
+"""
+
 
 class SourcePos:
 	"""
@@ -16,7 +20,7 @@ class SourcePos:
 	def __str__(self):
 		return 'line {pos.line}, column {pos.column}'.format(pos=self)
 
-	def feed(self, string):		
+	def feed(self, string):
 		for char in string:
 			if char == '\n':
 				self.line += 1

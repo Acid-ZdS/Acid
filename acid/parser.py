@@ -1,6 +1,10 @@
 #!/usr/bin/env python3.4
 # coding: utf-8
 
+"""
+Defines the AST structure of programs and expressions.
+"""
+
 __all__ = [
 	'Program',                                   # program AST
 	'Expr', 'Literal',                           # abstract AST nodes
