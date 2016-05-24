@@ -1,6 +1,6 @@
 **CAUTION : This page is in french only**
 
-# Acid : Specs version 1 (by [Dominus Carnufex](https://zestedesavoir.com/membres/voir/Dominus%20Carnufex/))
+# Acid : Spec V1 (par [Dominus Carnufex](https://zestedesavoir.com/membres/voir/Dominus%20Carnufex/))
 
 > ## Les lambdas
 > 
