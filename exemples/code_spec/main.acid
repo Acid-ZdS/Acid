@@ -1,0 +1,39 @@
+(use Bool::and)
+(use List::{Nil, Cons, !!})
+
+(hastype (lambda (List Char) (tuple)) print)
+
+(define print (lambda str (
+    match str (
+        (Nil (putchar '\n'))
+        ((Cons char next) (seq (putchar char) (print next)))
+    )
+)))
+
+(hastype (List Char) numbers)
+
+(define numbers "0123456789")
+
+(hastype (lambda Word64 (List Char)) show)
+
+(define show (lambda n str (
+    if (and (Word64::eq 0 n) (List::neq Nil str))
+        str
+        if (and (Word64::eq 0 n) (List::eq Nil str)
+            (Cons '0' Nil)
+            (show (div n 10) (Cons (!! numbers (mod n 10)) str))
+)))
+
+(hastype (lambda Word64 Word64) factorial)
+
+(define factorial (lambda n (
+    if (<= n 1)
+        1
+        (* n (factorial (- n 1)))
+)))
+
+(hastype (tuple) main)
+
+(define main (lambda () (
+    print (show (factorial (hastype Word64 42)))
+)))
