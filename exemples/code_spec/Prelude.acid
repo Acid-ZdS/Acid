@@ -1,0 +1,14 @@
+(hastype (lambda Bool a a a) if)
+
+(define if (lambda (cond if_true if_false) (
+    match cond (
+        (True if_true)
+        (False if_false)
+    )
+)))
+
+(hastype (lambda a b b) seq)
+
+(define seq (lambda (func1 func2) (
+    func2
+)))

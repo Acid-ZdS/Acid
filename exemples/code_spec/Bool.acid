@@ -1,0 +1,19 @@
+(define Bool (type (False True)))
+
+(hastype (lambda Bool Bool Bool) and)
+
+(define and (lambda (b1 b2) (
+    match b1 (
+        (True b2)
+        (False False)
+    )
+)))
+
+(hastype (lambda Bool Bool) not)
+
+(define not (lambda bool (
+    match bool (
+        (True False)
+        (False True)
+    )
+)))

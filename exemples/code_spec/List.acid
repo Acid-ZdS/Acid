@@ -1,0 +1,36 @@
+(define List (type a (
+    Nil
+    (Cons a (List a))
+)))
+
+(hastype (lambda (List a) (List a) Bool) eq)
+
+(define eq (lambda (xs ys) (
+    match xs (
+        (Nil (match ys ((Nil Bool::True) ((Cons _ _) Bool::False)))
+        ((Cons x xnext) (
+            match ys (
+                (Nil Bool::False)
+                ((Cons y ynext) (Bool::and (Type::a::eq x y) (eq xnext ynext)))
+            )
+        ))
+    )
+)))
+
+(hastype (lambda (List a) (List a) Bool) neq)
+
+(define neq (lambda (xs ys) (
+    not (eq xs ys)
+)))
+
+(hastype (lambda (List a) Word64 a) !!)
+
+(define !! (lambda (xs n) (
+    match xs (
+        (Nil (abort "Out of bounds."))
+        ((Cons x next) (Prelude::if (Word64::eq 0 n)
+            (x)
+            (!! next (Word64::- n 1))
+        ))
+    )
+)))
