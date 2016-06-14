@@ -13,6 +13,14 @@ Un commentaire monoligne s'écrira ainsi : `;commentaire`
 Et un commentaire multiligne de la sorte : `/* commentaire
                                                suite du commentaire */`
 
+# Fonctions built-in
+
+* `ord` => renvoi l'ordinal (unicode) d'un caractère passé en argument
+
+* `chr` => crée un caractère (unicode) à partir d'un ordinal
+
+* `begin` => contient un nombre indéterminé d'expressions qui seront évaluées les unes à la suite des autres (équivalent d'un bloc en Ruby)
+
 # Lambda
 
 *desc*: Une lambda en ZLang est l'équivalent d'une fonction en Python (ie).
@@ -35,13 +43,19 @@ Et un commentaire multiligne de la sorte : `/* commentaire
 
 *desc*: Simple `string`
 
-*syntaxe*: `(quote la_chaine_ici)`
+*syntaxe*: `(quote la_chaine_ici)`, `("ma chaine de caractères")`, `('ma chaine de caractères')`
+
+# Booléns
+
+*desc*: Type ne pouvant avoir que deux "états": `#t` => Vrai, et `#f` => Faux
+
+*syntaxe*: `#t`, `#f`
 
 # Nombres
 
 *desc*: Nombre entier, flottant ou complexe
 
-*syntaxe*: `1`, `42.12`, `1i44`
+*syntaxe*: `1`, `42.12`, `1+44i`
 
 # Liste
 
@@ -52,18 +66,11 @@ Et un commentaire multiligne de la sorte : `/* commentaire
 *note*: pour faciliter la création de grandes listes, on peut envisager la création d'une lambda (dans la lib standart) qui fonctionnerait comme suit :
         ```lisp
         ; fonction
-        (new range
-            (lambda start stop
-                (begin
-                    (new _iter (lambda _list _nb _stop
-                        (if
-                            (!= _nb _stop)
-                            (begin
-                                (cons _list _nb)
-                                (_iter _list (+ nb 1) _stop))
-                            )))
-                    (_iter (list) start stop)
-                    )))
+        (new range (lambda start stop (
+            if (= start stop)
+                Nil
+                (cons start (range (+ start 1) stop))
+        )))
         ; usage
         (new ma_liste (range 10 15))
         (ma_liste) ; affichera (10 11 12 13 14)
@@ -95,7 +102,7 @@ Et un commentaire multiligne de la sorte : `/* commentaire
 
 *syntaxe*: `(match motif expr1 expr2 exprN)`
 
-*note*: le `motif` ainsi que les expressions (ou l'expression) peuvent être des blocs ou de simples valeurs
+*note*: le `motif` ainsi que les expressions (ou l'expression) peuvent être des blocs ou de simples valeurs, se rapproche énormément du `switch`
 
 # Entrées-Sorties (ou I/O)
 
@@ -107,9 +114,15 @@ Et un commentaire multiligne de la sorte : `/* commentaire
 
 *syntaxe*: `(say texte)`
 
-## Ecriture dans un fichier
+## Ouverture d'un fichier en écriture
 
 *syntaxe*: `(open-output-file (quote filename))`
+
+### Ecriture dans un fichier
+
+*syntaxe*: `(write-in-file variable-de-fichier (quote texte))`
+
+*note*: retourne un int indiquant le nombre de caractères écrits dans le fichier
 
 ## Lecture de caractère par l'utilisateur
 
@@ -118,22 +131,23 @@ Et un commentaire multiligne de la sorte : `/* commentaire
 *note*: par extension, pour lire une chaine complète jusque ce que la touche `Entrée` soit enfoncée, on peut procéder comme suit :
         (sera sûrement inclus dans la lib standart)
         ```lisp
-        (new readline
-            (lambda _
-                (begin
-                    (new chaine (list))
-                    (new _iter
-                        (lambda _chr
-                            (if
-                                (!= (ord _chr) 10)
-                                (begin
-                                    (cons chaine _chr)
-                                    (_iter (getch))
-                                ))))
-                    (join (quote) (_iter (getch)))
-                    )))
+        (new readline (lambda _
+            (match getch
+                ((chr 10) (Nil))
+                (x (cons x readline))
+        )))
         ```
 
-## Lecture d'un fichier
+## Ouverture d'un fichier en lecture
 
 *syntaxe*: `(open-input-file (quote filename))`
+
+### Lire dans un fichier
+
+*syntaxe*: `(read-file variable-de-fichier)`
+
+*note*: retourne une chaine de caractères
+
+## Fermer un fichier
+
+*syntaxe*: `(close-file variable-de-fichier)`

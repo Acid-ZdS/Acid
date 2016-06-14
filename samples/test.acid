@@ -1,0 +1,25 @@
+(define range (lambda (start end)
+    (if (== start end)
+        Nil
+        (Cons start (range (+ start 1) end)))))
+
+(call/cc (lambda throw
+     (+ 5 (* 10 (call/cc (lambda escape (* 100 (escape 3))))))))
+
+(call/cc (lambda throw
+      (+ 5 (* 10 (call/cc (lambda escape (* 100 (throw 3))))))))
+
+(call/cc (lambda throw
+    (+ 5 (* 10 (call/cc (lambda escape (* 100 (escape 3))))))))
+
+(define combine (lambda f
+    (lambda x y
+      (if (null? x) (quote ())
+          (f (list (car x) (car y))
+             ((combine f) (cdr x) (cdr y)))))))
+
+(define riff-shuffle (lambda deck (begin
+    (define take (lambda n seq (if (<= n 0) (quote ()) (cons (car seq) (take (- n 1) (cdr seq))))))
+    (define drop (lambda n seq (if (<= n 0) seq (drop (- n 1) (cdr seq)))))
+    (define mid (lambda seq (/ (length seq) 2)))
+    ((combine append) (take (mid deck) deck) (drop (mid deck) deck)))))
