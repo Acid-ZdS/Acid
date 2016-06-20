@@ -14,7 +14,7 @@ Lorsqu’une expression ne contient qu’un seul élément, ne contenant lui-mê
 Voici un exemple de code source Acid, contenant deux expressions.
 
 ```lisp
-(hastype (lambda Bool a a a) if)
+(hastype if (lambda (Bool a a) a))
 
 (define if (lambda (cond if_true if_false) (
     match cond (
@@ -60,7 +60,7 @@ Voici un exemple de définition d’une lambda, qui appelle une lambda nommée, 
 **(9.2)** Les types flottants sont `Float` pour les flottants simple précision, et `Double` pour les flottants double précision.  
 **(9.3)** Les caractères, de type `Char`, peuvent couvrir l’ensemble des caractères Unicode.  
 **(9.4)** Les tuples sont la réunion ordonnée d’un nombre fixe de valeurs de types potentiellement différents. L’identifiant de leur type est composé du mot-clé **`tuple`** suivi de chacun des identifiants des types inclus, le tout entre parenthèses, par exemple `(tuple Int Char (tuple Char Char))`. Un tuple vide a par conséquent le type `(tuple)`.  
-**(9.5)** L’identifiant du type des lambdas est composé du mot-clé **`lambda`** suivi de chacun des identifiants des types des arguments, puis de celui de la valeur de retour, le tout entre parenthèses, par exemple `(lambda Char Char Int)`. Dans le cas d’une lambda sans paramètre, n’ayant qu’une valeur de retour, la lambda a le même identifiant de type que sa valeur de retour.
+**(9.5)** L’identifiant du type des lambdas est composé du mot-clé **`lambda`**, suivi d’une expression contenant la liste des identifiants des types des arguments, puis de l’identifiant du type de la valeur de retour, le tout entre parenthèses, par exemple `(lambda (Char Char) Int)`. Dans le cas d’une lambda sans paramètre, n’ayant qu’une valeur de retour, la lambda a le même identifiant de type que sa valeur de retour.
 
 **(10)** Dans les valeurs littérales de type flottant, la séparation entre partie entière et partie décimale est marquée par un point.
 
@@ -85,7 +85,7 @@ Par exemple, le code suivant définit une liste chaînée simple, avec un param�
 
 **(14)** En dehors de sa définition, un constructeur doit être précédé de l’identifiant de son type, et du caractère `::` ou `⸪`. Par exemple, si le type précédent s’appelle `List`, on n’écrira pas `Nil`, mais `List::Nil`.
 
-**(15)** Il est possible de signaler explicitement le type d’un objet au moyen d’une contrainte de type. Celle-ci est une expression composée du mot-clé **`hastype`**, d’un identifiant de type, et de l’objet ou de son identifiant, par exemple, `(hastype Word64 42)`.
+**(15)** Il est possible de signaler explicitement le type d’un objet au moyen d’une contrainte de type. Celle-ci est une expression composée du mot-clé **`hastype`**, de l’objet ou de son identifiant, et d’un identifiant de type, par exemple, `(hastype 42 Word64)`.
 
 **(16)** La présence d’une contrainte de type est obligatoire pour les lambdas nommées.
 
@@ -141,12 +141,12 @@ Il est ainsi possible de créer des synonymes de types, comme suit.
 
 **(22)** Un identifiant peut être composé de n’importe quelle suite de caractères Unicode, aux exceptions suivantes près.
 
-- L’identifiant ne doit pas contenir de caractère d’espacement (sauf dans le cas des identifiants de types de tuples ou de lambdas, qui sont entourés de parenthèses).
-- L’identifiant ne doit pas contenir les caractères `(`, `)`.
+- L’identifiant ne doit pas contenir de caractère d’espacement (sauf dans le cas des identifiants de types de tuples ou de lambdas, car ils sont entourés de parenthèses).
+- L’identifiant ne doit pas contenir les caractères `(`, `)`, `//`, `/*`, `/*`.
 - L’identifiant ne doit pas commencer et finir à la fois par le caractère `'`.
 - L’identifiant ne doit pas être composé exclusivement de chiffres, ou de chiffres et d’un unique point.
 - L’identifiant ne doit pas être un des mots-clés du langage, à savoir `abort`, `define`, `getchar` `hastype`, `lambda`, `match`, `putchar`, `tuple`, `type`, `_`, ni un des types prédéfinis.
-- Les implémentations peuvent définir des mots-clés ou symboles de syntaxe supplémentaires, pour les besoins de sucre syntaxique, qui ne devront alors pas être utilisés comme identifiants.
+- Les implémentations peuvent définir des mots-clés ou symboles de syntaxe supplémentaires, pour les besoins du sucre syntaxique, qui ne devront alors pas être utilisés comme identifiants.
 
 **(23)** Un identifiant de lambda ou de type est visible dans l’intégralité du code source. Un identifiant de variable est visible dans l’expression où la variable a été définie et ses sous-expressions. Si un identifiant de variable existe déjà comme identifiant de lambda, il remplace celui-ci dans tout son champ de visibilité.
 
@@ -157,7 +157,7 @@ Il est ainsi possible de créer des synonymes de types, comme suit.
 Par exemple, si on a un fichier `Data/Bool.acid` contenant le code suivant…
 
 ```lisp
-(hastype (Bool -> Bool) not)
+(hastype not (lambda Bool Bool))
 
 (define not (lambda bool (
     match bool (
@@ -187,7 +187,7 @@ Par exemple, si on a un fichier `Data/Bool.acid` contenant le code suivant…
 
 **(33)** Un certain nombre de lambdas ne peuvent pas être raisonnablement décrites dans la bibliothèque standard d’Acid, et doivent donc être gérées nativement par l’implémentation.
 
-- Les opérations d’égalité (`eq`) et inégalité (`neq`) sur tous les types primitifs, à l’exception des lambdas.
+- Les opérations d’égalité (`eq`) et inégalité (`neq`) sur tous les types prédéfinis, à l’exception des lambdas.
 - Les opérations de comparaison (`lt` pour inférieur, `le` pour inférieur ou égal, `gt` pour supérieur, `ge` pour supérieur ou égal) pour ces mêmes types.
 - Les opérations arithmétiques de base (`+`, `-`, `*`, `negate`) pour tous les types numériques.
 - Les opérations de division et de modulo sous leurs nombreuses formes :

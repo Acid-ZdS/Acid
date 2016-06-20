@@ -1,6 +1,6 @@
 (define Bool (type (False True)))
 
-(hastype (lambda Bool Bool Bool) and)
+(hastype and (lambda (Bool Bool) Bool))
 
 (define and (lambda (b1 b2) (
     match b1 (
@@ -9,7 +9,7 @@
     )
 )))
 
-(hastype (lambda Bool Bool) not)
+(hastype not (lambda Bool Bool))
 
 (define not (lambda bool (
     match bool (

@@ -1,4 +1,4 @@
-(hastype (lambda (List Char) (tuple)) print)
+(hastype print (lambda (List Char) (tuple)))
 
 (define print (lambda str (
     match str (
@@ -7,7 +7,7 @@
     )
 )))
 
-(hastype (List Char) numbers)
+(hastype numbers (List Char))
 
 (define numbers (List::Cons '0' (List::Cons '1' (List::Cons '2' (List::Cons '3'
                 (List::Cons '4' (List::Cons '5' (List::Cons '6' (List::Cons '7'
@@ -16,7 +16,7 @@
                 ))))
 )
 
-(hastype (lambda Word64 (List Char)) show)
+(hastype show (lambda Word64 (List Char)))
 
 (define show (lambda n str (
     if (Bool::and (Word64::eq 0 n) (List::neq List::Nil str))
@@ -28,7 +28,7 @@
             )
 )))
 
-(hastype (lambda Word64 Word64) factorial)
+(hastype factorial (lambda Word64 Word64))
 
 (define factorial (lambda n (
     if (Word64::le n 1)
@@ -36,8 +36,8 @@
         (Word64::* n (factorial (Word64::- n 1)))
 )))
 
-(hastype (tuple) main)
+(hastype main (tuple))
 
 (define main (lambda () (
-    print (show (factorial (hastype Word64 42)) List::Nil)
+    print (show (factorial (hastype 42 Word64)) List::Nil)
 )))
