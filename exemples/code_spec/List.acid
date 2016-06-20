@@ -3,7 +3,7 @@
     (Cons a (List a))
 )))
 
-(hastype (lambda (List a) (List a) Bool) eq)
+(hastype eq (lambda ((List a) (List a)) Bool))
 
 (define eq (lambda (xs ys) (
     match xs (
@@ -17,19 +17,19 @@
     )
 )))
 
-(hastype (lambda (List a) (List a) Bool) neq)
+(hastype neq (lambda ((List a) (List a)) Bool))
 
 (define neq (lambda (xs ys) (
-    not (eq xs ys)
+    Bool::not (eq xs ys)
 )))
 
-(hastype (lambda (List a) Word64 a) !!)
+(hastype !! (lambda ((List a) Word64) a))
 
 (define !! (lambda (xs n) (
     match xs (
-        (Nil (abort "Out of bounds."))
-        ((Cons x next) (Prelude::if (Word64::eq 0 n)
-            (x)
+        (Nil (abort "Out of bounds.")) // Devrait être sous forme de (Cons …),
+        ((Cons x next) (Prelude::if (Word64::eq 0 n) // mais j’ai pas la foi.
+            x
             (!! next (Word64::- n 1))
         ))
     )
